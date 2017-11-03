@@ -24,7 +24,7 @@
 #include "xtimer.h"
 #include "timex.h"
 
-#define ENABLE_DEBUG (0)
+#define ENABLE_DEBUG (1)
 #include "debug.h"
 
 /**
@@ -36,8 +36,8 @@
  */
 void otPlatAlarmMilliStartAt(otInstance *aInstance, uint32_t aT0, uint32_t aDt)
 {
-    DEBUG("ot_main->otPlatAlarmMilliStartAt: aT0: %" PRIu32 ", aDT: %" PRIu32 "\n", aT0, aDt);
-    printf("[timer set] %lu ms\n", aDt);
+    //DEBUG("ot_main->otPlatAlarmMilliStartAt: aT0: %" PRIu32 ", aDT: %" PRIu32 "\n", aT0, aDt);
+    DEBUG("[timer set] %lu ms\n", aDt);
 
     xtimer_remove(openthread_get_timer());
     if (aDt == 0) {
@@ -54,7 +54,7 @@ void otPlatAlarmMilliStartAt(otInstance *aInstance, uint32_t aT0, uint32_t aDt)
 /* OpenThread will call this to stop alarms */
 void otPlatAlarmMilliStop(otInstance *aInstance)
 {
-    DEBUG("ot_main->otPlatAlarmMilliStop\n");
+    //DEBUG("ot_main->otPlatAlarmMilliStop\n");
     xtimer_remove(openthread_get_timer());
 }
 
@@ -62,6 +62,6 @@ void otPlatAlarmMilliStop(otInstance *aInstance)
 uint32_t otPlatAlarmMilliGetNow(void)
 {
     uint32_t now = xtimer_now_usec() / US_PER_MS;
-    DEBUG("ot_main->otPlatAlarmMilliGetNow: %" PRIu32 "\n", now);
+    //DEBUG("ot_main->otPlatAlarmMilliGetNow: %" PRIu32 "\n", now);
     return now;
 }

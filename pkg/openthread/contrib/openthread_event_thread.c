@@ -22,7 +22,7 @@
 #define ENABLE_DEBUG (0)
 #include "debug.h"
 
-#define OPENTHREAD_EVENT_QUEUE_LEN (2)
+#define OPENTHREAD_EVENT_QUEUE_LEN (3)
 static msg_t _queue[OPENTHREAD_EVENT_QUEUE_LEN];
 static kernel_pid_t _pid;
 
