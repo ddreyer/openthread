@@ -58,7 +58,7 @@ static at86rf2xx_t at86rf2xx_dev;
 
 #define OPENTHREAD_QUEUE_LEN      (10)
 static msg_t _queue[OPENTHREAD_QUEUE_LEN];
-static char ot_main_thread_stack[2*THREAD_STACKSIZE_MAIN];
+static char ot_main_thread_stack[THREAD_STACKSIZE_MAIN+1000];
 static kernel_pid_t main_pid;
 
 static uint8_t rx_buf[OPENTHREAD_NETDEV_BUFLEN];
