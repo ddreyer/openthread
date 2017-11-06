@@ -40,13 +40,13 @@ void otPlatAlarmMilliStartAt(otInstance *aInstance, uint32_t aT0, uint32_t aDt)
     DEBUG("[timer set] %lu ms\n", aDt);
 
     xtimer_remove(openthread_get_timer());
-    if (aDt == 0) {
+    if (aDt <= 1) {
         msg_t msg;
         msg.type = OPENTHREAD_XTIMER_MSG_TYPE_EVENT;
         msg_send(&msg, openthread_get_event_pid());
     }
     else {
-        int dt = aDt * US_PER_MS;
+        uint64_t dt = (uint64_t)aDt * (uint64_t)US_PER_MS;
         xtimer_set(openthread_get_timer(), dt);
     }
 }
