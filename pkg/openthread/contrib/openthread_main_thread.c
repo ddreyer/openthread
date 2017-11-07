@@ -41,7 +41,11 @@
 #include "at86rf2xx_params.h"
 #endif
 
+#ifdef OPENTHREAD_BORDER_ROUTER
+#define ENABLE_DEBUG (0)
+#else
 #define ENABLE_DEBUG (1)
+#endif
 #include "debug.h"
 
 #ifdef MODULE_AT86RF2XX     /* is mutual exclusive with above ifdef */
