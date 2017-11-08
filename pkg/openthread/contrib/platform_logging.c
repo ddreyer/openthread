@@ -30,6 +30,9 @@
 #include "cli/cli-uart.h"
 #endif
 
+#define ENABLE_DEBUG (1)
+#include <debug.h>
+
 void otPlatLog(otLogLevel aLogLevel, otLogRegion aLogRegion, const char *aFormat, ...)
 {
 #if OPENTHREAD_ENABLE_CLI_LOGGING
@@ -40,6 +43,10 @@ void otPlatLog(otLogLevel aLogLevel, otLogRegion aLogRegion, const char *aFormat
 #else
     (void)aLogLevel;
     (void)aLogRegion;
-    (void)aFormat;
+    //(void)aFormat;
+    va_list args;
+    va_start(args, aFormat);
+    DEBUG_V(aFormat, args);
+    va_end(args);
 #endif /* OPENTHREAD_ENABLE_CLI_LOGGING */
 }

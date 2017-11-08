@@ -41,11 +41,7 @@
 #include "at86rf2xx_params.h"
 #endif
 
-#ifdef OPENTHREAD_BORDER_ROUTER
-#define ENABLE_DEBUG (0)
-#else
 #define ENABLE_DEBUG (1)
-#endif
 #include "debug.h"
 
 #ifdef MODULE_AT86RF2XX     /* is mutual exclusive with above ifdef */
@@ -127,8 +123,6 @@ static void _event_cb(netdev_t *dev, netdev_event_t event) {
         case NETDEV_EVENT_ISR:
             {
                 msg_t msg;
-                assert(_pid != KERNEL_PID_UNDEF);
-
                 msg.type = OPENTHREAD_NETDEV_MSG_TYPE_EVENT;
                 msg.content.ptr = dev;
 
@@ -140,8 +134,6 @@ static void _event_cb(netdev_t *dev, netdev_event_t event) {
         case NETDEV_EVENT_ISR2:
             {
                 msg_t msg;
-                assert(_pid != KERNEL_PID_UNDEF);
-
                 msg.type = OPENTHREAD_NETDEV_MSG_TYPE_EVENT;
                 msg.content.ptr = dev;
 
@@ -231,6 +223,7 @@ static void *_openthread_main_thread(void *arg) {
                     /* Tell OpenThread about the reception of a CLI command */
                     DEBUG("ot_main: serial\n");//OPENTHREAD_SERIAL_MSG_TYPE_SEND received\n");
                     serialBuffer = (serial_msg_t*)msg.content.ptr;
+                    DEBUG("%s", serialBuffer->buf);
                     otPlatUartReceived((uint8_t*) serialBuffer->buf,serialBuffer->length);
                     serialBuffer->serial_buffer_status = OPENTHREAD_SERIAL_BUFFER_STATUS_FREE;
                     break;
@@ -267,7 +260,7 @@ void openthread_bootstrap(void)
     netdev->driver->set(netdev, NETOPT_RX_END_IRQ, &enable, sizeof(enable));
     netdev->driver->set(netdev, NETOPT_TX_END_IRQ, &enable, sizeof(enable));
     openthread_radio_init(netdev, tx_buf, rx_buf);
-    printf("RADIO setting is OK\n");
+    DEBUG("RADIO setting is OK\n");
 
     /* init two threads for openthread */
     event_pid = openthread_event_init(ot_event_thread_stack, sizeof(ot_event_thread_stack),
