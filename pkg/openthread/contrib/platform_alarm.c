@@ -46,7 +46,7 @@ void otPlatAlarmMilliStartAt(otInstance *aInstance, uint32_t aT0, uint32_t aDt)
         msg_send(&msg, openthread_get_event_pid());
     }
     else {
-        uint64_t dt = (uint64_t)aDt * (uint64_t)US_PER_MS;
+        uint32_t dt = aDt * (uint32_t)US_PER_MS;
         xtimer_set(openthread_get_timer(), dt);
     }
 }
