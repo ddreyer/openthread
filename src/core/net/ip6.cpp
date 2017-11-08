@@ -331,11 +331,13 @@ exit:
 void Ip6::EnqueueDatagram(Message &aMessage)
 {
     mSendQueue.Enqueue(aMessage);
+    printf("Posting\n");
     mSendQueueTask.Post();
 }
 
 otError Ip6::SendDatagram(Message &aMessage, MessageInfo &aMessageInfo, IpProto aIpProto)
 {
+    printf("in send datagram, interface is is %d\n", aMessageInfo.mInterfaceId);
     otError error = OT_ERROR_NONE;
     Header header;
     uint16_t payloadLength = aMessage.GetLength();
@@ -401,6 +403,7 @@ exit:
 
     if (error == OT_ERROR_NONE)
     {
+        printf("at the end of send datagram: %hu\n", aMessageInfo.GetInterfaceId());
         aMessage.SetInterfaceId(aMessageInfo.GetInterfaceId());
         EnqueueDatagram(aMessage);
     }
@@ -410,15 +413,18 @@ exit:
 
 void Ip6::HandleSendQueue(Tasklet &aTasklet)
 {
+    printf("In HandleSendQueue\n");
     GetOwner(aTasklet).HandleSendQueue();
 }
 
 void Ip6::HandleSendQueue(void)
 {
+    printf("in HandleSendQueue no arg\n");
     Message *message;
 
     while ((message = mSendQueue.GetHead()) != NULL)
     {
+        printf("dequeueing\n");
         mSendQueue.Dequeue(*message);
         HandleDatagram(*message, NULL, message->GetInterfaceId(), NULL, false);
     }
@@ -786,6 +792,9 @@ otError Ip6::HandleDatagram(Message &aMessage, Netif *aNetif, int8_t aInterfaceI
         forward = false;
     }
 
+    printf("in handling datagram\n");
+    printf("this is receive boolean: %d\n", receive);
+    printf("this is forward boolean: %d\n", forward);
     // process IPv6 Payload
     if (receive)
     {
@@ -810,7 +819,8 @@ otError Ip6::HandleDatagram(Message &aMessage, Netif *aNetif, int8_t aInterfaceI
     if (forward)
     {
         forwardInterfaceId = FindForwardInterfaceId(messageInfo);
-
+        
+        printf("this is the interface id: %d\n", forwardInterfaceId);
         if (forwardInterfaceId == 0)
         {
             // try passing to host
@@ -827,6 +837,7 @@ otError Ip6::HandleDatagram(Message &aMessage, Netif *aNetif, int8_t aInterfaceI
             header.SetHopLimit(header.GetHopLimit() - 1);
         }
 
+        printf("this is the hop limit: %d\n", header.GetHopLimit());
         if (header.GetHopLimit() == 0)
         {
             // send time exceeded
@@ -836,7 +847,8 @@ otError Ip6::HandleDatagram(Message &aMessage, Netif *aNetif, int8_t aInterfaceI
         {
             hopLimit = header.GetHopLimit();
             aMessage.Write(Header::GetHopLimitOffset(), Header::GetHopLimitSize(), &hopLimit);
-
+            
+            printf("submit to interface\n");
             // submit aMessage to interface
             VerifyOrExit((aNetif = GetNetifById(forwardInterfaceId)) != NULL, error = OT_ERROR_NO_ROUTE);
             SuccessOrExit(error = aNetif->SendMessage(aMessage));
