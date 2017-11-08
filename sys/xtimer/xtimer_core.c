@@ -595,11 +595,8 @@ overflow:
         /* set low level timer */
         _lltimer_set(next_target);
     }
-    else if (overflow_list_head != NULL) {
+    else {
         /* there's no timer planned for this timer period */
-        /* schedule callback on next overflow */  
-        next_target = _xtimer_lltimer_mask(0xFFFFFFFF);
-      
         /* update current time */
 #if (XTIMER_HZ < 1000000ul) && (STIMER_HZ >= 1000000ul)
         now_s = _stimer_lltimer_now();
@@ -634,11 +631,13 @@ overflow:
         }
         _in_handler = 0;
 
-        /* set low level timer */
-        _lltimer_set(next_target);
-    } else {
-        /* No need to set any timer */
-        _in_handler = 0;
+        if (overflow_list_head != NULL) {
+            /* schedule callback on next overflow */  
+            next_target = _xtimer_lltimer_mask(0xFFFFFFFF);
+            /* set low level timer */
+            _lltimer_set(next_target);
+     
+        }
     }
 
 }
