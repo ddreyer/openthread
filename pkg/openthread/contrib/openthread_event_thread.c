@@ -49,6 +49,10 @@ static void *_openthread_event_thread(void *arg) {
                 msg_send(&msg, openthread_get_main_pid());
                 break;
         }
+        if (openthread_event_stack_overflow_check()) {
+            DEBUG("\n\n\n\n\n\n\n\n\n\n\n\nevent thread stack overflow\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+            NVIC_SystemReset();
+        }    
     }
 
     return NULL;

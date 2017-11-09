@@ -56,15 +56,15 @@ static xtimer_t ot_timer;
 static at86rf2xx_t at86rf2xx_dev;
 #endif
 
-#define OPENTHREAD_QUEUE_LEN      (10)
+#define OPENTHREAD_QUEUE_LEN      (8)
 static msg_t _queue[OPENTHREAD_QUEUE_LEN];
-static char ot_main_thread_stack[THREAD_STACKSIZE_MAIN+1000];
+static char ot_main_thread_stack[THREAD_STACKSIZE_MAIN+1004];
 static kernel_pid_t main_pid;
 
 static uint8_t rx_buf[OPENTHREAD_NETDEV_BUFLEN];
 static uint8_t tx_buf[OPENTHREAD_NETDEV_BUFLEN];
 
-static char ot_event_thread_stack[THREAD_STACKSIZE_MAIN];
+static char ot_event_thread_stack[THREAD_STACKSIZE_MAIN+4];
 static kernel_pid_t event_pid;
 
 
@@ -90,6 +90,22 @@ netdev_t* openthread_get_netdev(void) {
 xtimer_t* openthread_get_timer(void) {
     return &ot_timer;
 }
+
+bool openthread_main_stack_overflow_check(void) {
+    if (ot_main_thread_stack[0] == 0xA9 && ot_main_thread_stack[1] == 0x3C &&
+        ot_main_thread_stack[2] == 0x08 && ot_main_thread_stack[3] == 0x29) {
+        return false;
+    } 
+    return true;
+} 
+
+bool openthread_event_stack_overflow_check(void) {
+    if (ot_event_thread_stack[0] == 0x82 && ot_event_thread_stack[1] == 0xAE &&
+        ot_event_thread_stack[2] == 0xCA && ot_event_thread_stack[3] == 0x11) {
+        return false;
+    } 
+    return true;
+} 
 
 uint8_t ot_call_command(char* command, void *arg, void* answer) {
     ot_job_t job;
@@ -205,9 +221,13 @@ static void *_openthread_main_thread(void *arg) {
     while (1) {
         otTaskletsProcess(sInstance);
         if (otTaskletsArePending(sInstance) == false) {
-            DEBUG("****** ot_main sleep ******\n");
+            //DEBUG("****** ot_main sleep ******\n");
+            if (openthread_main_stack_overflow_check()) {
+                DEBUG("\n\n\n\n\n\n\n\n\n\n\n\nstack overflow\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+                NVIC_SystemReset();
+            }
             msg_receive(&msg);
-            DEBUG("\n****** ot_main wakeup ******\n");
+            DEBUG("\n****** ot_main wakeup\n");
             switch (msg.type) {
                 case OPENTHREAD_NETDEV_MSG_TYPE_EVENT:
                     /* Received an event from driver */
@@ -261,6 +281,16 @@ void openthread_bootstrap(void)
     netdev->driver->set(netdev, NETOPT_TX_END_IRQ, &enable, sizeof(enable));
     openthread_radio_init(netdev, tx_buf, rx_buf);
     DEBUG("RADIO setting is OK\n");
+
+    ot_main_thread_stack[0] = 0xA9;
+    ot_main_thread_stack[1] = 0x3C;
+    ot_main_thread_stack[2] = 0x08;
+    ot_main_thread_stack[3] = 0x29;
+    
+    ot_event_thread_stack[0] = 0x82;
+    ot_event_thread_stack[1] = 0xAE;
+    ot_event_thread_stack[2] = 0xCA; 
+    ot_event_thread_stack[3] = 0x11;
 
     /* init two threads for openthread */
     event_pid = openthread_event_init(ot_event_thread_stack, sizeof(ot_event_thread_stack),

@@ -174,6 +174,9 @@ otInstance* openthread_get_instance(void);
  */
 xtimer_t* openthread_get_timer(void);
 
+bool openthread_main_stack_overflow_check(void);
+bool openthread_event_stack_overflow_check(void);
+
 /**
  * @brief   Init OpenThread random
  */
