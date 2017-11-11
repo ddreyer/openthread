@@ -95,6 +95,7 @@ uint16_t Ip6::ComputePseudoheaderChecksum(const Address &aSource, const Address 
 
 void Ip6::SetReceiveDatagramCallback(otIp6ReceiveCallback aCallback, void *aCallbackContext)
 {
+    printf("setting datagram callback: %p\n", aCallback);
     mReceiveIp6DatagramCallback = aCallback;
     mReceiveIp6DatagramCallbackContext = aCallbackContext;
 }
@@ -580,13 +581,15 @@ otError Ip6::ProcessReceiveCallback(const Message &aMessage, const MessageInfo &
     VerifyOrExit(aFromNcpHost == false, error = OT_ERROR_DROP);
     VerifyOrExit(mReceiveIp6DatagramCallback != NULL, error = OT_ERROR_NO_ROUTE);
 
+    printf("after 1st\n");
     if (mIsReceiveIp6FilterEnabled)
     {
         // do not pass messages sent to an RLOC/ALOC
         VerifyOrExit(!aMessageInfo.GetSockAddr().IsRoutingLocator() &&
                      !aMessageInfo.GetSockAddr().IsAnycastRoutingLocator(),
                      error = OT_ERROR_NO_ROUTE);
-
+        
+        printf("after second\n");
         switch (aIpProto)
         {
         case kProtoIcmp6:
@@ -614,6 +617,7 @@ otError Ip6::ProcessReceiveCallback(const Message &aMessage, const MessageInfo &
                 if (aMessageInfo.GetSockAddr().IsLinkLocal() ||
                     aMessageInfo.GetSockAddr().IsLinkLocalMulticast())
                 {
+                    printf("is link local, bad\n");
                     ExitNow(error = OT_ERROR_NO_ROUTE);
                 }
 
@@ -641,6 +645,7 @@ otError Ip6::ProcessReceiveCallback(const Message &aMessage, const MessageInfo &
         }
     }
 
+    printf("processing callback\n");
     // make a copy of the datagram to pass to host
     VerifyOrExit((messageCopy = aMessage.Clone()) != NULL, error = OT_ERROR_NO_BUFS);
     RemoveMplOption(*messageCopy);
@@ -648,6 +653,7 @@ otError Ip6::ProcessReceiveCallback(const Message &aMessage, const MessageInfo &
 
 exit:
 
+    printf("error in process calback: %d\n", error);
     switch (error)
     {
     case OT_ERROR_NO_BUFS:
@@ -800,6 +806,7 @@ otError Ip6::HandleDatagram(Message &aMessage, Netif *aNetif, int8_t aInterfaceI
     {
         if (nextHeader == kProtoIp6)
         {
+            printf("removing encap header\n");
             // Remove encapsulating header.
             aMessage.RemoveHeader(aMessage.GetOffset());
 
@@ -807,6 +814,7 @@ otError Ip6::HandleDatagram(Message &aMessage, Netif *aNetif, int8_t aInterfaceI
             ExitNow(tunnel = true);
         }
 
+        printf("about to callback\n");
         ProcessReceiveCallback(aMessage, messageInfo, nextHeader, aFromNcpHost);
 
         SuccessOrExit(error = HandlePayload(aMessage, messageInfo, nextHeader));

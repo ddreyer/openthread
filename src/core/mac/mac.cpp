@@ -1529,11 +1529,13 @@ extern "C" void otPlatRadioReceiveDone(otInstance *aInstance, otRadioFrame *aFra
 
     if (aInstance->mLinkRaw.IsEnabled())
     {
+        printf("first receive done block\n");
         aInstance->mLinkRaw.InvokeReceiveDone(aFrame, aError);
     }
     else
 #endif // OPENTHREAD_ENABLE_RAW_LINK_API
-    {
+    {   
+        printf("second receive done block\n");
         aInstance->mThreadNetif.GetMac().ReceiveDoneTask(static_cast<Frame *>(aFrame), aError);
     }
 
@@ -1573,6 +1575,7 @@ void Mac::ReceiveDoneTask(Frame *aFrame, otError aError)
     aFrame->GetSrcAddr(srcaddr);
     neighbor = GetNetif().GetMle().GetNeighbor(srcaddr);
 
+    printf("neighbor: %p\n", neighbor);
     switch (srcaddr.mLength)
     {
     case 0:
@@ -1772,6 +1775,7 @@ void Mac::ReceiveDoneTask(Frame *aFrame, otError aError)
     }
 
 exit:
+    printf("exiting from Receive: %d\n", error);
 
     if (error != OT_ERROR_NONE)
     {
