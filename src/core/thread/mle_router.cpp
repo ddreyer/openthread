@@ -59,8 +59,11 @@
 #define ENABLE_DEBUG (1)
 #endif
 
-using ot::Encoding::BigEndian::HostSwap16;
 
+// Logging router change count
+//uint32_t rtchangeCt = 0;
+
+using ot::Encoding::BigEndian::HostSwap16;
 namespace ot {
 namespace Mle {
 
@@ -1720,6 +1723,9 @@ void MleRouter::UpdateRoutes(const RouteTlv &aRoute, uint8_t aRouterId)
 
             routeCount++;
         }
+    #if ENABLE_DEBUG
+        rtchangeCt++;
+    #endif
     }
     while (update);
 
