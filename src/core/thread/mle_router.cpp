@@ -1630,7 +1630,8 @@ void MleRouter::UpdateRoutes(const RouteTlv &aRoute, uint8_t aRouterId)
     uint8_t cost;
     uint8_t linkQuality;
     bool update;
-
+    printf("UPDATING ROUTES");
+    rtchangeCt++;
     // update routes
     do
     {
@@ -1720,12 +1721,9 @@ void MleRouter::UpdateRoutes(const RouteTlv &aRoute, uint8_t aRouterId)
 
                 update |= mRouters[i].GetNextHop() != oldNextHop;
             }
-
+		
             routeCount++;
         }
-    #if ENABLE_DEBUG
-        rtchangeCt++;
-    #endif
     }
     while (update);
 
