@@ -80,4 +80,5 @@
 
 #endif
 
+extern uint32_t rtchangeCt;
 #endif  // DEBUG_HPP_
