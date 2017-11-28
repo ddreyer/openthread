@@ -99,6 +99,7 @@ uint16_t Ip6::ComputePseudoheaderChecksum(const Address &aSource, const Address 
 
 void Ip6::SetReceiveDatagramCallback(otIp6ReceiveCallback aCallback, void *aCallbackContext)
 {
+    printf("setting datagram callback: %p\n", aCallback);
     mReceiveIp6DatagramCallback = aCallback;
     mReceiveIp6DatagramCallbackContext = aCallbackContext;
 }
@@ -335,11 +336,13 @@ exit:
 void Ip6::EnqueueDatagram(Message &aMessage)
 {
     mSendQueue.Enqueue(aMessage);
+    printf("Posting\n");
     mSendQueueTask.Post();
 }
 
 otError Ip6::SendDatagram(Message &aMessage, MessageInfo &aMessageInfo, IpProto aIpProto)
 {
+    printf("in send datagram, interface is is %d\n", aMessageInfo.mInterfaceId);
     otError error = OT_ERROR_NONE;
     Header header;
     uint16_t payloadLength = aMessage.GetLength();
@@ -405,6 +408,7 @@ exit:
 
     if (error == OT_ERROR_NONE)
     {
+        printf("at the end of send datagram: %hu\n", aMessageInfo.GetInterfaceId());
         aMessage.SetInterfaceId(aMessageInfo.GetInterfaceId());
         EnqueueDatagram(aMessage);
     }
@@ -414,15 +418,18 @@ exit:
 
 void Ip6::HandleSendQueue(Tasklet &aTasklet)
 {
+    printf("In HandleSendQueue\n");
     GetOwner(aTasklet).HandleSendQueue();
 }
 
 void Ip6::HandleSendQueue(void)
 {
+    printf("in HandleSendQueue no arg\n");
     Message *message;
 
     while ((message = mSendQueue.GetHead()) != NULL)
     {
+        printf("dequeueing\n");
         mSendQueue.Dequeue(*message);
         HandleDatagram(*message, NULL, message->GetInterfaceId(), NULL, false);
     }
@@ -578,13 +585,15 @@ otError Ip6::ProcessReceiveCallback(const Message &aMessage, const MessageInfo &
     VerifyOrExit(aFromNcpHost == false, error = OT_ERROR_DROP);
     VerifyOrExit(mReceiveIp6DatagramCallback != NULL, error = OT_ERROR_NO_ROUTE);
 
+    printf("after 1st\n");
     if (mIsReceiveIp6FilterEnabled)
     {
         // do not pass messages sent to an RLOC/ALOC
         VerifyOrExit(!aMessageInfo.GetSockAddr().IsRoutingLocator() &&
                      !aMessageInfo.GetSockAddr().IsAnycastRoutingLocator(),
                      error = OT_ERROR_NO_ROUTE);
-
+        
+        printf("after second\n");
         switch (aIpProto)
         {
         case kProtoIcmp6:
@@ -612,6 +621,7 @@ otError Ip6::ProcessReceiveCallback(const Message &aMessage, const MessageInfo &
                 if (aMessageInfo.GetSockAddr().IsLinkLocal() ||
                     aMessageInfo.GetSockAddr().IsLinkLocalMulticast())
                 {
+                    printf("is link local, bad\n");
                     ExitNow(error = OT_ERROR_NO_ROUTE);
                 }
 
@@ -639,6 +649,7 @@ otError Ip6::ProcessReceiveCallback(const Message &aMessage, const MessageInfo &
         }
     }
 
+    printf("processing callback\n");
     // make a copy of the datagram to pass to host
     VerifyOrExit((messageCopy = aMessage.Clone()) != NULL, error = OT_ERROR_NO_BUFS);
     RemoveMplOption(*messageCopy);
@@ -646,6 +657,7 @@ otError Ip6::ProcessReceiveCallback(const Message &aMessage, const MessageInfo &
 
 exit:
 
+    printf("error in process calback: %d\n", error);
     switch (error)
     {
     case OT_ERROR_NO_BUFS:
@@ -790,11 +802,15 @@ otError Ip6::HandleDatagram(Message &aMessage, Netif *aNetif, int8_t aInterfaceI
         forward = false;
     }
 
+    printf("in handling datagram\n");
+    printf("this is receive boolean: %d\n", receive);
+    printf("this is forward boolean: %d\n", forward);
     // process IPv6 Payload
     if (receive)
     {
         if (nextHeader == kProtoIp6)
         {
+            printf("removing encap header\n");
             // Remove encapsulating header.
             aMessage.RemoveHeader(aMessage.GetOffset());
 
@@ -802,6 +818,7 @@ otError Ip6::HandleDatagram(Message &aMessage, Netif *aNetif, int8_t aInterfaceI
             ExitNow(tunnel = true);
         }
 
+        printf("about to callback\n");
         ProcessReceiveCallback(aMessage, messageInfo, nextHeader, aFromNcpHost);
 
         SuccessOrExit(error = HandlePayload(aMessage, messageInfo, nextHeader));
@@ -814,7 +831,8 @@ otError Ip6::HandleDatagram(Message &aMessage, Netif *aNetif, int8_t aInterfaceI
     if (forward)
     {
         forwardInterfaceId = FindForwardInterfaceId(messageInfo);
-
+        
+        printf("this is the interface id: %d\n", forwardInterfaceId);
         if (forwardInterfaceId == 0)
         {
             // try passing to host
@@ -831,6 +849,7 @@ otError Ip6::HandleDatagram(Message &aMessage, Netif *aNetif, int8_t aInterfaceI
             header.SetHopLimit(header.GetHopLimit() - 1);
         }
 
+        printf("this is the hop limit: %d\n", header.GetHopLimit());
         if (header.GetHopLimit() == 0)
         {
             // send time exceeded
@@ -840,7 +859,8 @@ otError Ip6::HandleDatagram(Message &aMessage, Netif *aNetif, int8_t aInterfaceI
         {
             hopLimit = header.GetHopLimit();
             aMessage.Write(Header::GetHopLimitOffset(), Header::GetHopLimitSize(), &hopLimit);
-
+            
+            printf("submit to interface\n");
             // submit aMessage to interface
             VerifyOrExit((aNetif = GetNetifById(forwardInterfaceId)) != NULL, error = OT_ERROR_NO_ROUTE);
             SuccessOrExit(error = aNetif->SendMessage(aMessage));

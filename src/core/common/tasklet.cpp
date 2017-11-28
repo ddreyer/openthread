@@ -66,7 +66,7 @@ TaskletScheduler::TaskletScheduler(void):
 otError TaskletScheduler::Post(Tasklet &aTasklet)
 {
     otError error = OT_ERROR_NONE;
-
+    printf("in tasklet post\n");
     VerifyOrExit(mTail != &aTasklet && aTasklet.mNext == NULL, error = OT_ERROR_ALREADY);
 
     if (mTail == NULL)
