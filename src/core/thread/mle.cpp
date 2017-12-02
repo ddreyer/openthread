@@ -487,6 +487,7 @@ otError Mle::Discover(uint32_t aScanChannels, uint16_t aPanId, bool aJoiner, boo
     LogMleMessage("Send Discovery Request", destination);
 #if ENABLE_DEBUG
     otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, "[OT-MLE]: Tx DiscoveryReq\n");
+    discoveryCnt++;
 #endif
 
 exit:
@@ -1659,6 +1660,7 @@ otError Mle::SendChildIdRequest(void)
     LogMleMessage("Send Child ID Request", destination);;
 #if ENABLE_DEBUG
     otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, "[OT-MLE]: Tx C-ID Req\n");
+    childIDRequestCnt++;
 #endif
 
     if ((mDeviceMode & ModeTlv::kModeRxOnWhenIdle) == 0)
@@ -1703,6 +1705,7 @@ otError Mle::SendDataRequest(const Ip6::Address &aDestination, const uint8_t *aT
         LogMleMessage("Send Data Request", aDestination);
 #if ENABLE_DEBUG
         otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, "[OT-MLE]: Tx D-Req\n");
+        dataRequestCnt++;
 #endif
         if ((mDeviceMode & ModeTlv::kModeRxOnWhenIdle) == 0)
         {
@@ -1824,6 +1827,7 @@ otError Mle::SendChildUpdateRequest(void)
     LogMleMessage("Send Child Update Request to parent", destination);
 #if ENABLE_DEBUG
     otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, "[OT-MLE]: Tx C-UpdateReq to P\n");
+    childUpdateReqCnt++;
 #endif
 
     if ((mDeviceMode & ModeTlv::kModeRxOnWhenIdle) == 0)
@@ -1895,6 +1899,7 @@ otError Mle::SendChildUpdateResponse(const uint8_t *aTlvs, uint8_t aNumTlvs, con
     LogMleMessage("Send Child Update Response to parent", destination);
 #if ENABLE_DEBUG
     otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, "[OT-MLE]: Tx C-Update Resp to P\n");
+    childUpdateRespCnt++;
 #endif
 
 exit:
@@ -1954,6 +1959,7 @@ otError Mle::SendAnnounce(uint8_t aChannel, bool aOrphanAnnounce)
     otLogInfoMle(GetInstance(), "Send Announce on channel %d", aChannel);
 #if ENABLE_DEBUG
     otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, "[OT-MLE]: Tx Annouce\n");
+    announceCnt++;
 #endif
 
 exit:
@@ -1977,6 +1983,7 @@ void Mle::SendOrphanAnnounce(void)
     VerifyOrExit(channelMask != NULL);
 #if ENABLE_DEBUG
     otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, "[OT-MLE]: Tx OrphanAnnounce\n");
+    orphanCnt++;
 #endif
 
     // find next channel in the Active Operational Dataset Channel Mask

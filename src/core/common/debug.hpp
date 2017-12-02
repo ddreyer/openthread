@@ -80,5 +80,14 @@
 
 #endif
 
-extern uint32_t rtchangeCt;
+extern uint16_t nexthopChangeCt;
+extern uint16_t addressMsgCnt;
+extern uint8_t parentRequestMsgCnt;
+extern uint8_t childIDRequestCnt;
+extern uint8_t dataRequestCnt;
+extern uint8_t childUpdateReqCnt;
+extern uint8_t childUpdateRespCnt;
+extern uint8_t announceCnt;
+extern uint8_t orphanCnt;
+extern uint8_t discoveryCnt;
 #endif  // DEBUG_HPP_

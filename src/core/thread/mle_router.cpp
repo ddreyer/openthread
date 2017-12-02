@@ -60,9 +60,6 @@
 #endif
 
 
-// Logging router change count
-//uint32_t rtchangeCt = 0;
-
 using ot::Encoding::BigEndian::HostSwap16;
 namespace ot {
 namespace Mle {
@@ -1630,8 +1627,6 @@ void MleRouter::UpdateRoutes(const RouteTlv &aRoute, uint8_t aRouterId)
     uint8_t cost;
     uint8_t linkQuality;
     bool update;
-    printf("UPDATING ROUTES");
-    rtchangeCt++;
     // update routes
     do
     {
