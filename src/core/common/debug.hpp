@@ -85,5 +85,7 @@ extern uint32_t joiningMsgCnt;
 extern uint32_t routingMsgCnt;
 extern uint32_t linkMsgCnt;
 extern uint32_t controlMsgCnt;
+extern uint32_t packetSuccessCnt;
+extern uint32_t packetFailCnt;
 
 #endif  // DEBUG_HPP_
