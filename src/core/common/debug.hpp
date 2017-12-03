@@ -79,7 +79,7 @@
   } while (0)
 
 #endif
-
+extern uint16_t borderRouteChangeCnt;
 extern uint16_t nexthopChangeCt;
 extern uint16_t addressMsgCnt;
 extern uint8_t parentRequestMsgCnt;

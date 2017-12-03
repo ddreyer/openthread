@@ -1631,7 +1631,6 @@ void MleRouter::UpdateRoutes(const RouteTlv &aRoute, uint8_t aRouterId)
     do
     {
         update = false;
-
         for (uint8_t i = 0, routeCount = 0; i <= kMaxRouterId; i++)
         {
             if (aRoute.IsRouterIdSet(i) == false)
@@ -1713,15 +1712,13 @@ void MleRouter::UpdateRoutes(const RouteTlv &aRoute, uint8_t aRouterId)
                         mRouters[i].SetCost(cost);
                     }
                 }
-
                 update |= mRouters[i].GetNextHop() != oldNextHop;
             }
-		
+	        	
             routeCount++;
         }
     }
     while (update);
-
 #if ENABLE_DEBUG
     uint16_t addr;
     otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, "\nMy ML-RLOC16: ");
