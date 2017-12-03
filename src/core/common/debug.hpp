@@ -79,15 +79,11 @@
   } while (0)
 
 #endif
-extern uint16_t borderRouteChangeCnt;
-extern uint16_t nexthopChangeCt;
-extern uint16_t addressMsgCnt;
-extern uint8_t parentRequestMsgCnt;
-extern uint8_t childIDRequestCnt;
-extern uint8_t dataRequestCnt;
-extern uint8_t childUpdateReqCnt;
-extern uint8_t childUpdateRespCnt;
-extern uint8_t announceCnt;
-extern uint8_t orphanCnt;
-extern uint8_t discoveryCnt;
+extern uint8_t borderRouteChangeCnt;
+extern uint32_t addressMsgCnt;
+extern uint32_t joiningMsgCnt;
+extern uint32_t routingMsgCnt;
+extern uint32_t linkMsgCnt;
+extern uint32_t controlMsgCnt;
+
 #endif  // DEBUG_HPP_
