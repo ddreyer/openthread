@@ -110,7 +110,15 @@ void AddressResolver::Remove(uint8_t routerId)
     {
         if (Mle::Mle::GetRouterId(mCache[i].mRloc16) == routerId)
         {
-            InvalidateCacheEntry(mCache[i], kReasonRemovingRouterId);
+            //if (mCache[i].mRloc16_2 != 0) 
+            //{
+            //    mCache[i].mRloc16 = mCache[i].mRloc16_2;
+            //    mCache[i].mRloc16_2 = 0;
+            //}
+            //else 
+            //{
+                InvalidateCacheEntry(mCache[i], kReasonRemovingRouterId);
+            //}
         }
     }
 }
@@ -267,7 +275,10 @@ otError AddressResolver::Resolve(const Ip6::Address &aEid, uint16_t &aRloc16)
             if (mCache[i].mTarget == aEid)
             {
                 entry = &mCache[i];
-                break;
+                if (mCache[i].mState != Cache::kStateInvalid)
+                {
+                    break;
+                }
             }
         }
     }
