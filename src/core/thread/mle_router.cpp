@@ -1752,6 +1752,7 @@ void MleRouter::UpdateRoutes(const RouteTlv &aRoute, uint8_t aRouterId)
     otIp6AddressFromString("fdde:ad00:beef:0000:c684:4ab6:ac8f:9fe5", &borderIP);
     otShortAddress borderRloc16;
     GetNetif().GetAddressResolver().Resolve(borderIP, borderRloc16);
+    printf("BR RLOC16: %d\n", borderRloc16); 
 
 #endif
 
@@ -1784,19 +1785,28 @@ void MleRouter::UpdateRoutes(const RouteTlv &aRoute, uint8_t aRouterId)
         }
         //mRouters[i].GetLinkInfo().GetLinkQuality(), mRouters[i].GetLinkQualityOut());
         // capture border router routing data
+        
         if (GetRloc16(i) == borderRloc16) {
+            otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, "BR RT %x: %x %d %d %d RT\n",
+                     GetRloc16(i),
+                     GetRloc16(mRouters[i].GetNextHop()),
+                     mRouters[i].GetCost(),
+                     GetLinkCost(i), GetLinkCost(mRouters[i].GetNextHop())); 
             borderRouterLC = GetLinkCost(i);
-            if (borderRouterLC == 16) {    
-                borderRouterLC = GetLinkCost(mRouters[i].GetNextHop());
+            if (borderRouterLC == 16) {   
+                borderRouterLC = 15; 
+               /* borderRouterLC = GetLinkCost(mRouters[i].GetNextHop());
+                otEidCacheEntry cacheEntry;
+                GetNetif().GetAddressResolver().GetEntry(brCacheIndex, cacheEntry);
+                otIp6Address address = cacheEntry.mTarget;
+                snprintf(nexthopBuffer, sizeof(nexthopBuffer), "%x:%x:%x:%x:%x:%x:%x:%x",
+                    HostSwap16(address.mFields.m16[0]), HostSwap16(address.mFields.m16[1]),
+                    HostSwap16(address.mFields.m16[2]), HostSwap16(address.mFields.m16[3]),
+                    HostSwap16(address.mFields.m16[4]), HostSwap16(address.mFields.m16[5]),
+                    HostSwap16(address.mFields.m16[6]), HostSwap16(address.mFields.m16[7]));*/
+            } else {
+                //sprintf(nexthopBuffer, sizeof(nexthopBuffer), "fdde:ad00:beef:0000:c684:4ab6:ac8f:9fe5");
             }
-            otEidCacheEntry cacheEntry;
-            GetNetif().GetAddressResolver().GetEntry(brCacheIndex, cacheEntry);
-            otIp6Address address = cacheEntry.mTarget;
-            snprintf(nexthopBuffer, sizeof(nexthopBuffer), "%x:%x:%x:%x:%x:%x:%x:%x",
-                HostSwap16(address.mFields.m16[0]), HostSwap16(address.mFields.m16[1]),
-                HostSwap16(address.mFields.m16[2]), HostSwap16(address.mFields.m16[3]),
-                HostSwap16(address.mFields.m16[4]), HostSwap16(address.mFields.m16[5]),
-                HostSwap16(address.mFields.m16[6]), HostSwap16(address.mFields.m16[7]));
         }
 #endif
     }

@@ -266,9 +266,6 @@ otError AddressResolver::Resolve(const Ip6::Address &aEid, uint16_t &aRloc16)
         {
             if (mCache[i].mTarget == aEid)
             {
-#if ENABLE_DEBUG                
-                brCacheIndex = i;
-#endif                
                 entry = &mCache[i];
                 break;
             }
