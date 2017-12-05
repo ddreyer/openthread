@@ -35,7 +35,7 @@
 #define WPP_NAME "mle_router.tmh"
 
 #include <openthread/config.h>
-
+#include "address_resolver.hpp"
 #include "mle_router.hpp"
 
 #include <openthread/platform/random.h>
@@ -1794,18 +1794,23 @@ void MleRouter::UpdateRoutes(const RouteTlv &aRoute, uint8_t aRouterId)
                      GetLinkCost(i), GetLinkCost(mRouters[i].GetNextHop())); 
             borderRouterLC = GetLinkCost(i);
             if (borderRouterLC == 16) {   
-                borderRouterLC = 15; 
-               /* borderRouterLC = GetLinkCost(mRouters[i].GetNextHop());
+                borderRouterLC = 15;
+                //borderRouterLC = GetLinkCost(mRouters[i].GetNextHop());
                 otEidCacheEntry cacheEntry;
-                GetNetif().GetAddressResolver().GetEntry(brCacheIndex, cacheEntry);
+                for (int j = 0; j < OPENTHREAD_CONFIG_ADDRESS_CACHE_ENTRIES; j++) {
+                    GetNetif().GetAddressResolver().GetEntry(j, cacheEntry);    
+                    if (cacheEntrymValid == 1 && cacheEntry.mRloc16 == mRouters[j].GetNextHop()) {
+                        break;
+                    }
+                }
                 otIp6Address address = cacheEntry.mTarget;
                 snprintf(nexthopBuffer, sizeof(nexthopBuffer), "%x:%x:%x:%x:%x:%x:%x:%x",
                     HostSwap16(address.mFields.m16[0]), HostSwap16(address.mFields.m16[1]),
                     HostSwap16(address.mFields.m16[2]), HostSwap16(address.mFields.m16[3]),
                     HostSwap16(address.mFields.m16[4]), HostSwap16(address.mFields.m16[5]),
-                    HostSwap16(address.mFields.m16[6]), HostSwap16(address.mFields.m16[7]));*/
+                    HostSwap16(address.mFields.m16[6]), HostSwap16(address.mFields.m16[7]));
             } else {
-                //sprintf(nexthopBuffer, sizeof(nexthopBuffer), "fdde:ad00:beef:0000:c684:4ab6:ac8f:9fe5");
+                sprintf(nexthopBuffer, "fdde:ad00:beef:0000:c684:4ab6:ac8f:9fe5");
             }
         }
 #endif
