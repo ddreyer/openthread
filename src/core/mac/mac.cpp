@@ -1092,16 +1092,6 @@ otError Mac::RadioTransmit(Frame *aSendFrame)
 
 exit:
     
-#if ENABLE_DEBUG
-    if (error == OT_ERROR_NONE)
-    {
-        packetSuccessCnt++;
-    }
-    else
-    {
-        packetFailCnt++;
-    }
-#endif
     if (error != OT_ERROR_NONE)
     {
         otLogWarnMac(GetInstance(), "otPlatRadioTransmit() failed with error %s", otThreadErrorToString(error));
@@ -1334,6 +1324,11 @@ void Mac::SentFrame(otError aError)
            mCounters.mTxAckRequested);
     otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MAC, "Bro: %lu\n", mCounters.mTxNoAckRequested); 
     otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MAC, "-----------------\n");
+    
+    packetSuccessCnt = mCounters.mTxAcked;
+    packetFailCnt = mCounters.mTxAckRequested-mCounters.mTxAcked-mCounters.mTxErrBusyChannel;
+    packetBusyChannelCnt = mCounters.mTxErrBusyChannel;
+    broadcastCnt = mCounters.mTxNoAckRequested;
 #endif    
 
     switch (mOperation)

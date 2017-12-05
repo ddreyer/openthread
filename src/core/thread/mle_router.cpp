@@ -1746,6 +1746,13 @@ void MleRouter::UpdateRoutes(const RouteTlv &aRoute, uint8_t aRouterId)
     }
     otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, "\n\n---- [OT-RT] ----\n");
     otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, " ID NH RC LC NHLC\n");//InLinkQ  OutLinkQ\n");    
+
+    // resolve border router EID to RLOC16
+    ot::Ip6::Address borderIP;
+    otIp6AddressFromString("fdde:ad00:beef:0000:c684:4ab6:ac8f:9fe5", &borderIP);
+    otShortAddress borderRloc16;
+    GetNetif().GetAddressResolver().Resolve( borderIP, borderRloc16);
+
 #endif
 
 //#if (OPENTHREAD_CONFIG_LOG_MLE && (OPENTHREAD_CONFIG_LOG_LEVEL >= OT_LOG_LEVEL_DEBG))
@@ -1775,7 +1782,14 @@ void MleRouter::UpdateRoutes(const RouteTlv &aRoute, uint8_t aRouterId)
             otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, "NT %x: %d NT\n",
                      GetRloc16(i), GetLinkCost(i)); 
         }
-//mRouters[i].GetLinkInfo().GetLinkQuality(), mRouters[i].GetLinkQualityOut());
+        //mRouters[i].GetLinkInfo().GetLinkQuality(), mRouters[i].GetLinkQualityOut());
+        // capture border router routing data
+        if (GetRloc16(i) == borderRloc16) {
+            borderRouterLC = GetLinkCost(i);
+            if (borderRouterLC == 16) {    
+                borderRouterLC = GetLinkCost(mRouters[i].GetNextHop());
+            }
+        }
 #endif
     }
 #if ENABLE_DEBUG

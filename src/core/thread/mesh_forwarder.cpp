@@ -850,19 +850,6 @@ otError MeshForwarder::UpdateIp6Route(Message &aMessage)
 
     GetMacSourceAddress(ip6Header.GetSource(), mMacSource);
 
-    int ii;
-    bool flag2;
-    otIp6Address borderrouterip;
-    otIp6AddressFromString("fdde:ad00:beef:0000:c684:4ab6:ac8f:9fe5", &borderrouterip);
-    for(ii = 0; ii < 4; ii++)
-    {
-        if (ip6Header.GetDestination().mFields.m32[ii] != borderrouterip.mFields.m32[ii])
-            flag2 = false;
-    }
-    if (flag2)
-        borderRouteChangeCnt++;
-
-
     // 1. Choose correct MAC Source Address.
     
     
