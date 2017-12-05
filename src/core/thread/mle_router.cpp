@@ -1799,7 +1799,8 @@ void MleRouter::UpdateRoutes(const RouteTlv &aRoute, uint8_t aRouterId)
                 otEidCacheEntry cacheEntry;
                 for (int j = 0; j < OPENTHREAD_CONFIG_ADDRESS_CACHE_ENTRIES; j++) {
                     GetNetif().GetAddressResolver().GetEntry(j, cacheEntry);    
-                    if (cacheEntry.mValid == 1 && cacheEntry.mRloc16 == mRouters[j].GetNextHop()) {
+                    if (cacheEntry.mValid == 1 && cacheEntry.mRloc16 == mRouters[i].GetNextHop()) {
+                        printf("FOUND NEXT HOP EID\n");
                         break;
                     }
                 }
@@ -1810,6 +1811,7 @@ void MleRouter::UpdateRoutes(const RouteTlv &aRoute, uint8_t aRouterId)
                     HostSwap16(address.mFields.m16[4]), HostSwap16(address.mFields.m16[5]),
                     HostSwap16(address.mFields.m16[6]), HostSwap16(address.mFields.m16[7]));
             } else {
+                printf("NEXT HOP IS BORDER ROUTER\n");
                 sprintf(nexthopBuffer, "fdde:ad00:beef:0000:c684:4ab6:ac8f:9fe5");
             }
         }
