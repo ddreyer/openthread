@@ -1751,7 +1751,7 @@ void MleRouter::UpdateRoutes(const RouteTlv &aRoute, uint8_t aRouterId)
     ot::Ip6::Address borderIP;
     otIp6AddressFromString("fdde:ad00:beef:0000:c684:4ab6:ac8f:9fe5", &borderIP);
     otShortAddress borderRloc16;
-    GetNetif().GetAddressResolver().Resolve( borderIP, borderRloc16);
+    GetNetif().GetAddressResolver().Resolve(borderIP, borderRloc16);
 
 #endif
 
@@ -1789,6 +1789,14 @@ void MleRouter::UpdateRoutes(const RouteTlv &aRoute, uint8_t aRouterId)
             if (borderRouterLC == 16) {    
                 borderRouterLC = GetLinkCost(mRouters[i].GetNextHop());
             }
+            otEidCacheEntry cacheEntry;
+            GetNetif().GetAddressResolver().GetEntry(brCacheIndex, cacheEntry);
+            otIp6Address address = cacheEntry.mTarget;
+            snprintf(nexthopBuffer, sizeof(nexthopBuffer), "%x%x%x%x%x%x%x%x",
+                HostSwap16(address.mFields.m16[0]), HostSwap16(address.mFields.m16[1]),
+                HostSwap16(address.mFields.m16[2]), HostSwap16(address.mFields.m16[3]),
+                HostSwap16(address.mFields.m16[4]), HostSwap16(address.mFields.m16[5]),
+                HostSwap16(address.mFields.m16[6]), HostSwap16(address.mFields.m16[7]));
         }
 #endif
     }
