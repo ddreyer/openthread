@@ -1799,7 +1799,7 @@ void MleRouter::UpdateRoutes(const RouteTlv &aRoute, uint8_t aRouterId)
                 otEidCacheEntry cacheEntry;
                 for (int j = 0; j < OPENTHREAD_CONFIG_ADDRESS_CACHE_ENTRIES; j++) {
                     GetNetif().GetAddressResolver().GetEntry(j, cacheEntry);    
-                    if (cacheEntrymValid == 1 && cacheEntry.mRloc16 == mRouters[j].GetNextHop()) {
+                    if (cacheEntry.mValid == 1 && cacheEntry.mRloc16 == mRouters[j].GetNextHop()) {
                         break;
                     }
                 }
