@@ -514,6 +514,10 @@ void Mle::HandleDiscoverComplete(void)
 
 otError Mle::BecomeDetached(void)
 {
+    #if DEBUG_ENABLED
+        otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, "BecomeDetached called\n");
+        otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, "mParent: %d\nmParent_2: %d\n", mParent.GetRloc16(), mParent_2.GetRloc16());
+    #endif
     if (mParent_2.GetState() == Neighbor::kStateValid) {
         mParent = mParent_2;
         memset(&mParent_2, 0, sizeof(mParent_2));
@@ -3477,7 +3481,8 @@ Router *Mle::GetParentCandidate(void)
     Router *rval;
 
     if (mParentCandidate.GetState() == Neighbor::kStateValid)
-            rval = &mParentCandidate;
+    {
+        rval = &mParentCandidate;
     }
     else
     {
