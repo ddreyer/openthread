@@ -1792,7 +1792,7 @@ void MleRouter::UpdateRoutes(const RouteTlv &aRoute, uint8_t aRouterId)
             otEidCacheEntry cacheEntry;
             GetNetif().GetAddressResolver().GetEntry(brCacheIndex, cacheEntry);
             otIp6Address address = cacheEntry.mTarget;
-            snprintf(nexthopBuffer, sizeof(nexthopBuffer), "%x%x%x%x%x%x%x%x",
+            snprintf(nexthopBuffer, sizeof(nexthopBuffer), "%x:%x:%x:%x:%x:%x:%x:%x",
                 HostSwap16(address.mFields.m16[0]), HostSwap16(address.mFields.m16[1]),
                 HostSwap16(address.mFields.m16[2]), HostSwap16(address.mFields.m16[3]),
                 HostSwap16(address.mFields.m16[4]), HostSwap16(address.mFields.m16[5]),
