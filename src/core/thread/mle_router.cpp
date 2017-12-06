@@ -4501,7 +4501,9 @@ void MleRouter::SendAddressSolicitResponse(const Coap::Header &aRequestHeader, u
 
     LogMleMessage("Send Address Reply", aMessageInfo.GetPeerAddr());
 #if ENABLE_DEBUG
-    otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE,"[Griff debug] mParent: %d\nmParent_2: %d\n", mParent.GetRloc16(), mParent_2.GetRloc16());
+    char buf[100];
+    sprintf(buf, "[Griff debug] mParent: %d\nmParent_2: %d\n", mParent.GetRloc16(), mParent_2.GetRloc16());
+    otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, buf);
     otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, "[OT-MLERouter]: Tx Addr Reply\n");
 #endif
 
