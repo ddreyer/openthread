@@ -514,14 +514,13 @@ void Mle::HandleDiscoverComplete(void)
 
 otError Mle::BecomeDetached(void)
 {
-    // TODO: set this for enable_debug only
+#if ENABLE_DEBUG
     otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE,"[Griff debug] BecomeDetached() called\n");
     otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE,"[Griff debug] mParent: %d\nmParent_2: %d\n", mParent.GetRloc16(), mParent_2.GetRloc16());
-    //otLogInfoMle(GetInstance(), "[Griff debug]\n");    
+#endif
 
     if (mParent_2.GetState() == Neighbor::kStateValid) {
         memcpy(&mParent, &mParent_2, sizeof(mParent_2)); 
-        mParent = mParent_2;
         memset(&mParent_2, 0, sizeof(mParent_2));
         return OT_ERROR_NONE;
     }
