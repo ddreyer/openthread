@@ -1799,6 +1799,8 @@ void MleRouter::UpdateRoutes(const RouteTlv &aRoute, uint8_t aRouterId)
                 otEidCacheEntry cacheEntry;
                 for (int j = 0; j < OPENTHREAD_CONFIG_ADDRESS_CACHE_ENTRIES; j++) {
                     GetNetif().GetAddressResolver().GetEntry(j, cacheEntry);    
+                    printf("CHECKING CACHE\n")
+                    printf("%x, %x\n", cacheEntry.mRloc16, mRouters[i].GetNextHop());
                     if (cacheEntry.mValid == 1 && cacheEntry.mRloc16 == mRouters[i].GetNextHop()) {
                         printf("FOUND NEXT HOP EID\n");
                         break;
