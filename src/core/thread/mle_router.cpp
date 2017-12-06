@@ -1795,25 +1795,11 @@ void MleRouter::UpdateRoutes(const RouteTlv &aRoute, uint8_t aRouterId)
             myRloc = HostSwap16(GetMeshLocal16().mFields.m16[7]);
             otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, "MY RLOC: %x\n", myRloc);
             if (borderRouterLC == 16) {   
-                borderRouterLC = 15;
-                nextHopRloc = GetRloc16(mRouters[i].GetNextHop());
-                //borderRouterLC = GetLinkCost(mRouters[i].GetNextHop());
-                /*otEidCacheEntry cacheEntry;
-                for (int j = 0; j < OPENTHREAD_CONFIG_ADDRESS_CACHE_ENTRIES; j++) {
-                    GetNetif().GetAddressResolver().GetEntry(j, cacheEntry);    
-                    otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, "%x, %x\n", cacheEntry.mRloc16, GetRloc16(mRouters[i].GetNextHop()));
-                    if (cacheEntry.mValid == 1 && cacheEntry.mRloc16 == GetRloc16(mRouters[i].GetNextHop())) {
-                        otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, "FOUND NEXT HOP EID\n");
-                        break;
-                    }
+                if (GetRloc16(mRouters[i].GetNextHop()) != nextHopRloc) {
+                    borderRouteChangeCnt++;
                 }
-                otIp6Address address = cacheEntry.mTarget;
-                snprintf(nexthopBuffer, sizeof(nexthopBuffer), "%x:%x:%x:%x:%x:%x:%x:%x",
-                    HostSwap16(address.mFields.m16[0]), HostSwap16(address.mFields.m16[1]),
-                    HostSwap16(address.mFields.m16[2]), HostSwap16(address.mFields.m16[3]),
-                    HostSwap16(address.mFields.m16[4]), HostSwap16(address.mFields.m16[5]),
-                    HostSwap16(address.mFields.m16[6]), HostSwap16(address.mFields.m16[7]));*/
-                
+                nextHopRloc = GetRloc16(mRouters[i].GetNextHop());
+                borderRouterLC = GetLinkCost(mRouters[i].GetNextHop());                
             } else {
                nextHopRloc = 0x8800; 
             }
