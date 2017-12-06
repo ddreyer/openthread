@@ -1765,6 +1765,9 @@ otError Mle::SendChildUpdateRequest(void)
     Ip6::Address destination;
     Message *message = NULL;
 
+    Message *message_2 = NULL;
+    Ip6::Address destination_2;   
+
 #if ENABLE_DEBUG
     uint16_t addr;
     otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, "\nMy ML-RLOC16: ");
@@ -1835,10 +1838,21 @@ otError Mle::SendChildUpdateRequest(void)
         break;
     }
 
+    if (mParent_2.GetRloc16() != 0) {
+        memcpy(message_2, message, sizeof(ot::Message));
+    }
+
     memset(&destination, 0, sizeof(destination));
     destination.mFields.m16[0] = HostSwap16(0xfe80);
     destination.SetIid(mParent.GetExtAddress());
     SuccessOrExit(error = SendMessage(*message, destination));
+
+    if (mParent_2.GetRloc16() != 0) {
+        memset(&destination_2, 0, sizeof(destination));
+        destination_2.mFields.m16[0] = HostSwap16(0xfe80);
+        destination_2.SetIid(mParent_2.GetExtAddress());
+        SuccessOrExit(error = SendMessage(*message_2, destination_2));
+    }
 
     LogMleMessage("Send Child Update Request to parent", destination);
 #if ENABLE_DEBUG
