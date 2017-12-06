@@ -517,7 +517,8 @@ otError Mle::BecomeDetached(void)
     // TODO: set this for enable_debug only
     otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE,"[Griff debug] BecomeDetached() called\n");
     otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE,"[Griff debug] mParent: %d\nmParent_2: %d\n", mParent.GetRloc16(), mParent_2.GetRloc16());
-    
+    //otLogInfoMle(GetInstance(), "[Griff debug]\n");    
+
     if (mParent_2.GetState() == Neighbor::kStateValid) {
         mParent = mParent_2;
         memset(&mParent_2, 0, sizeof(mParent_2));

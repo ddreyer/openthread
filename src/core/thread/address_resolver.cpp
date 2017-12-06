@@ -118,6 +118,7 @@ void AddressResolver::Remove(uint8_t routerId)
 AddressResolver::Cache *AddressResolver::NewCacheEntry(void)
 {
     Cache *rval = NULL;
+    otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_ARP, "[Griff debug] Some fucking shit.\n");
 
     for (int i = 0; i < kCacheEntries; i++)
     {

@@ -4533,6 +4533,7 @@ void MleRouter::HandleAddressRelease(Coap::Header &aHeader, Message &aMessage,
 
     LogMleMessage("Receive Address Release", aMessageInfo.GetPeerAddr());
 #if ENABLE_DEBUG
+    otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE,"[Griff debug] mParent: %d\nmParent_2: %d\n", mParent.GetRloc16(), mParent_2.GetRloc16());
     otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, "[OT-MLERouter]: Rx Addr Rel\n");
 #endif
 
