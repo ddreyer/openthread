@@ -520,7 +520,7 @@ otError Mle::BecomeDetached(void)
 #endif
 
     if (mParent_2.GetState() == Neighbor::kStateValid) {
-        memcpy(&mParent, &mParent_2, sizeof(mParent_2)); 
+        mParent = mParent_2;
         memset(&mParent_2, 0, sizeof(mParent_2));
         return OT_ERROR_NONE;
     }
@@ -3024,10 +3024,7 @@ otError Mle::HandleChildIdResponse(const Message &aMessage, const Ip6::MessageIn
         SuccessOrExit(error = netif.GetMle().ProcessRouteTlv(route));
     }
     
-    if (mParent_2.GetState() != Neighbor::kStateValid) 
-    {
-        mParent_2 = mParent;
-    }
+    mParent_2 = mParent;
     mParent = mParentCandidate;
     ResetParentCandidate();
 
