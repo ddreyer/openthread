@@ -1753,13 +1753,6 @@ void MleRouter::UpdateRoutes(const RouteTlv &aRoute, uint8_t aRouterId)
     otShortAddress borderRloc16;
     GetNetif().GetAddressResolver().Resolve(borderIP, borderRloc16);
     otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, "BR RLOC16: %d\n", borderRloc16); 
-    otEidCacheEntry cEntry;
-                    otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, "CHECKING CACHE\n");
-
-                for (int j = 0; j < OPENTHREAD_CONFIG_ADDRESS_CACHE_ENTRIES; j++) {
-                    GetNetif().GetAddressResolver().GetEntry(j, cEntry);    
-                    otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, "%x\n", cEntry.mRloc16);
-                }            
 #endif
 
 //#if (OPENTHREAD_CONFIG_LOG_MLE && (OPENTHREAD_CONFIG_LOG_LEVEL >= OT_LOG_LEVEL_DEBG))
@@ -1799,10 +1792,13 @@ void MleRouter::UpdateRoutes(const RouteTlv &aRoute, uint8_t aRouterId)
                      mRouters[i].GetCost(),
                      GetLinkCost(i), GetLinkCost(mRouters[i].GetNextHop())); 
             borderRouterLC = GetLinkCost(i);
+            myRloc = HostSwap16(GetMeshLocal16().mFields.m16[7]);
+            otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, "MY RLOC: %x\n", myRloc);
             if (borderRouterLC == 16) {   
                 borderRouterLC = 15;
+                nextHopRloc = GetRloc16(mRouters[i].GetNextHop());
                 //borderRouterLC = GetLinkCost(mRouters[i].GetNextHop());
-                otEidCacheEntry cacheEntry;
+                /*otEidCacheEntry cacheEntry;
                 for (int j = 0; j < OPENTHREAD_CONFIG_ADDRESS_CACHE_ENTRIES; j++) {
                     GetNetif().GetAddressResolver().GetEntry(j, cacheEntry);    
                     otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, "%x, %x\n", cacheEntry.mRloc16, GetRloc16(mRouters[i].GetNextHop()));
@@ -1816,10 +1812,12 @@ void MleRouter::UpdateRoutes(const RouteTlv &aRoute, uint8_t aRouterId)
                     HostSwap16(address.mFields.m16[0]), HostSwap16(address.mFields.m16[1]),
                     HostSwap16(address.mFields.m16[2]), HostSwap16(address.mFields.m16[3]),
                     HostSwap16(address.mFields.m16[4]), HostSwap16(address.mFields.m16[5]),
-                    HostSwap16(address.mFields.m16[6]), HostSwap16(address.mFields.m16[7]));
+                    HostSwap16(address.mFields.m16[6]), HostSwap16(address.mFields.m16[7]));*/
+                
             } else {
-                sprintf(nexthopBuffer, "fdde:ad00:beef:0000:c684:4ab6:ac8f:9fe5");
+               nextHopRloc = 0x8800; 
             }
+            otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, "NH RLOC: %x\n", nextHopRloc);
         }
 #endif
     }

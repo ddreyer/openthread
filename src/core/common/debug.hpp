@@ -90,5 +90,7 @@ extern uint32_t packetSuccessCnt;
 extern uint32_t packetFailCnt;
 extern uint32_t packetBusyChannelCnt;
 extern uint32_t broadcastCnt;
-extern char nexthopBuffer[40];
+extern uint16_t myRloc;
+extern uint16_t nextHopRloc;
+
 #endif  // DEBUG_HPP_
