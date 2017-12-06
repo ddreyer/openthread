@@ -110,15 +110,7 @@ void AddressResolver::Remove(uint8_t routerId)
     {
         if (Mle::Mle::GetRouterId(mCache[i].mRloc16) == routerId)
         {
-            //if (mCache[i].mRloc16_2 != 0) 
-            //{
-            //    mCache[i].mRloc16 = mCache[i].mRloc16_2;
-            //    mCache[i].mRloc16_2 = 0;
-            //}
-            //else 
-            //{
-                InvalidateCacheEntry(mCache[i], kReasonRemovingRouterId);
-            //}
+            InvalidateCacheEntry(mCache[i], kReasonRemovingRouterId);
         }
     }
 }
@@ -267,6 +259,12 @@ otError AddressResolver::Resolve(const Ip6::Address &aEid, uint16_t &aRloc16)
 {
     otError error = OT_ERROR_NONE;
     Cache *entry = NULL;
+
+    #if ENABLE_DEBUG
+        for (int i = 0; i < kCacheEntries; i++) {
+            printf("Entry #%d Rloc16: %d\n", i, mCache[i].mRloc16);
+        }
+    #endif
 
     for (int i = 0; i < kCacheEntries; i++)
     {

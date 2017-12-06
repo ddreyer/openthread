@@ -514,7 +514,7 @@ void Mle::HandleDiscoverComplete(void)
 
 otError Mle::BecomeDetached(void)
 {
-    #if DEBUG_ENABLED
+    #if ENABLE_DEBUG
         printf("BecomeDetached called\n");
         printf("mParent: %d\nmParent_2: %d\n", mParent.GetRloc16(), mParent_2.GetRloc16());
     #endif
