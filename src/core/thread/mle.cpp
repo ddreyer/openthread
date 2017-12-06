@@ -515,8 +515,8 @@ void Mle::HandleDiscoverComplete(void)
 otError Mle::BecomeDetached(void)
 {
     #if ENABLE_DEBUG
-        printf("BecomeDetached called\n");
-        printf("mParent: %d\nmParent_2: %d\n", mParent.GetRloc16(), mParent_2.GetRloc16());
+        otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE,"BecomeDetached() called\n");
+        otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE,"mParent: %d\nmParent_2: %d\n", mParent.GetRloc16(), mParent_2.GetRloc16());
     #endif
     if (mParent_2.GetState() == Neighbor::kStateValid) {
         mParent = mParent_2;
