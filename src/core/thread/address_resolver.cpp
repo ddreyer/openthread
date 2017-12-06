@@ -260,11 +260,9 @@ otError AddressResolver::Resolve(const Ip6::Address &aEid, uint16_t &aRloc16)
     otError error = OT_ERROR_NONE;
     Cache *entry = NULL;
 
-    #if ENABLE_DEBUG
-        for (int i = 0; i < kCacheEntries; i++) {
-            otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_ARP, "[Griff debug] AddressResolver Entry #%d Rloc16: %d\n", i, mCache[i].mRloc16);
-        }
-    #endif
+    for (int i = 0; i < kCacheEntries; i++) {
+        otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_ARP, "[Griff debug] AddressResolver Entry #%d Rloc16: %d\n", i, mCache[i].mRloc16);
+    }
 
     for (int i = 0; i < kCacheEntries; i++)
     {
