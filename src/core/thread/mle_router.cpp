@@ -1752,8 +1752,14 @@ void MleRouter::UpdateRoutes(const RouteTlv &aRoute, uint8_t aRouterId)
     otIp6AddressFromString("fdde:ad00:beef:0000:c684:4ab6:ac8f:9fe5", &borderIP);
     otShortAddress borderRloc16;
     GetNetif().GetAddressResolver().Resolve(borderIP, borderRloc16);
-    printf("BR RLOC16: %d\n", borderRloc16); 
+    otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, "BR RLOC16: %d\n", borderRloc16); 
+    otEidCacheEntry cEntry;
+                    otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, "CHECKING CACHE\n");
 
+                for (int j = 0; j < OPENTHREAD_CONFIG_ADDRESS_CACHE_ENTRIES; j++) {
+                    GetNetif().GetAddressResolver().GetEntry(j, cEntry);    
+                    otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, "%x\n", cEntry.mRloc16);
+                }            
 #endif
 
 //#if (OPENTHREAD_CONFIG_LOG_MLE && (OPENTHREAD_CONFIG_LOG_LEVEL >= OT_LOG_LEVEL_DEBG))
@@ -1799,9 +1805,8 @@ void MleRouter::UpdateRoutes(const RouteTlv &aRoute, uint8_t aRouterId)
                 otEidCacheEntry cacheEntry;
                 for (int j = 0; j < OPENTHREAD_CONFIG_ADDRESS_CACHE_ENTRIES; j++) {
                     GetNetif().GetAddressResolver().GetEntry(j, cacheEntry);    
-                    otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, "CHECKING CACHE\n");
                     otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, "%x, %x\n", cacheEntry.mRloc16, mRouters[i].GetNextHop());
-                    if (cacheEntry.mValid == 1 && cacheEntry.mRloc16 == mRouters[i].GetNextHop()) {
+                    if (cacheEntry.mValid == 1 && cacheEntry.mRloc16 == GetRloc16(mRouters[i].GetNextHop())) {
                         otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, "FOUND NEXT HOP EID\n");
                         break;
                     }
