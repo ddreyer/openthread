@@ -1793,7 +1793,6 @@ void MleRouter::UpdateRoutes(const RouteTlv &aRoute, uint8_t aRouterId)
                      GetLinkCost(i), GetLinkCost(mRouters[i].GetNextHop())); 
             borderRouterLC = GetLinkCost(i);
             myRloc = HostSwap16(GetMeshLocal16().mFields.m16[7]);
-            otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, "MY RLOC: %x\n", myRloc);
             if (borderRouterLC == 16) {   
                 if (GetRloc16(mRouters[i].GetNextHop()) != nextHopRloc) {
                     borderRouteChangeCnt++;
@@ -1803,7 +1802,7 @@ void MleRouter::UpdateRoutes(const RouteTlv &aRoute, uint8_t aRouterId)
             } else {
                nextHopRloc = 0x8800; 
             }
-            otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, "NH RLOC: %x\n", nextHopRloc);
+            otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MLE, "Next Hop RLOC: %x\n", nextHopRloc);
         }
 #endif
     }
