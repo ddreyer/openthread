@@ -845,12 +845,15 @@ otError MeshForwarder::UpdateIp6Route(Message &aMessage)
     mAddMeshHeader = false;
 
     aMessage.Read(0, sizeof(ip6Header), &ip6Header);
-
+    
     VerifyOrExit(!ip6Header.GetSource().IsMulticast(), error = OT_ERROR_DROP);
 
-    // 1. Choose correct MAC Source Address.
     GetMacSourceAddress(ip6Header.GetSource(), mMacSource);
 
+    // 1. Choose correct MAC Source Address.
+    
+    
+    
 #if ENABLE_DEBUG
     uint16_t addr[8];
     otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_IP6, "to Dest ");

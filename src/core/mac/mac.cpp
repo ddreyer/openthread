@@ -1091,7 +1091,7 @@ otError Mac::RadioTransmit(Frame *aSendFrame)
     SuccessOrExit(error = otPlatRadioTransmit(&GetInstance(), static_cast<otRadioFrame *>(aSendFrame)));
 
 exit:
-
+    
     if (error != OT_ERROR_NONE)
     {
         otLogWarnMac(GetInstance(), "otPlatRadioTransmit() failed with error %s", otThreadErrorToString(error));
@@ -1324,6 +1324,11 @@ void Mac::SentFrame(otError aError)
            mCounters.mTxAckRequested);
     otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MAC, "Bro: %lu\n", mCounters.mTxNoAckRequested); 
     otPlatLog(OT_LOG_LEVEL_INFO, OT_LOG_REGION_MAC, "-----------------\n");
+    
+    packetSuccessCnt = mCounters.mTxAcked;
+    packetFailCnt = mCounters.mTxAckRequested-mCounters.mTxAcked-mCounters.mTxErrBusyChannel;
+    packetBusyChannelCnt = mCounters.mTxErrBusyChannel;
+    broadcastCnt = mCounters.mTxNoAckRequested;
 #endif    
 
     switch (mOperation)
@@ -1539,7 +1544,7 @@ extern "C" void otPlatRadioReceiveDone(otInstance *aInstance, otRadioFrame *aFra
     }
     else
 #endif // OPENTHREAD_ENABLE_RAW_LINK_API
-    {
+    {   
         aInstance->mThreadNetif.GetMac().ReceiveDoneTask(static_cast<Frame *>(aFrame), aError);
     }
 

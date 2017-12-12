@@ -79,5 +79,18 @@
   } while (0)
 
 #endif
+extern uint8_t borderRouteChangeCnt;
+extern uint8_t borderRouterLC;
+extern uint32_t addressMsgCnt;
+extern uint32_t joiningMsgCnt;
+extern uint32_t routingMsgCnt;
+extern uint32_t linkMsgCnt;
+extern uint32_t controlMsgCnt;
+extern uint32_t packetSuccessCnt;
+extern uint32_t packetFailCnt;
+extern uint32_t packetBusyChannelCnt;
+extern uint32_t broadcastCnt;
+extern uint16_t myRloc;
+extern uint16_t nextHopRloc;
 
 #endif  // DEBUG_HPP_
