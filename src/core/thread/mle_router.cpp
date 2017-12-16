@@ -60,6 +60,7 @@
 #endif
 
 using ot::Encoding::BigEndian::HostSwap16;
+
 namespace ot {
 namespace Mle {
 

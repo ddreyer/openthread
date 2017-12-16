@@ -1091,6 +1091,7 @@ otError Mac::RadioTransmit(Frame *aSendFrame)
     SuccessOrExit(error = otPlatRadioTransmit(&GetInstance(), static_cast<otRadioFrame *>(aSendFrame)));
 
 exit:
+
     if (error != OT_ERROR_NONE)
     {
         otLogWarnMac(GetInstance(), "otPlatRadioTransmit() failed with error %s", otThreadErrorToString(error));

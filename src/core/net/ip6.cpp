@@ -584,6 +584,7 @@ otError Ip6::ProcessReceiveCallback(const Message &aMessage, const MessageInfo &
         VerifyOrExit(!aMessageInfo.GetSockAddr().IsRoutingLocator() &&
                      !aMessageInfo.GetSockAddr().IsAnycastRoutingLocator(),
                      error = OT_ERROR_NO_ROUTE);
+
         switch (aIpProto)
         {
         case kProtoIcmp6:
@@ -813,6 +814,7 @@ otError Ip6::HandleDatagram(Message &aMessage, Netif *aNetif, int8_t aInterfaceI
     if (forward)
     {
         forwardInterfaceId = FindForwardInterfaceId(messageInfo);
+
         if (forwardInterfaceId == 0)
         {
             // try passing to host
@@ -838,6 +840,7 @@ otError Ip6::HandleDatagram(Message &aMessage, Netif *aNetif, int8_t aInterfaceI
         {
             hopLimit = header.GetHopLimit();
             aMessage.Write(Header::GetHopLimitOffset(), Header::GetHopLimitSize(), &hopLimit);
+
             // submit aMessage to interface
             VerifyOrExit((aNetif = GetNetifById(forwardInterfaceId)) != NULL, error = OT_ERROR_NO_ROUTE);
             SuccessOrExit(error = aNetif->SendMessage(aMessage));
