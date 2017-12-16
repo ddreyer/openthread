@@ -79,18 +79,18 @@
   } while (0)
 
 #endif
-extern uint8_t borderRouteChangeCnt;
-extern uint8_t borderRouterLC;
-extern uint32_t addressMsgCnt;
-extern uint32_t joiningMsgCnt;
-extern uint32_t routingMsgCnt;
-extern uint32_t linkMsgCnt;
-extern uint32_t controlMsgCnt;
-extern uint32_t packetSuccessCnt;
-extern uint32_t packetFailCnt;
-extern uint32_t packetBusyChannelCnt;
-extern uint32_t broadcastCnt;
-extern uint16_t myRloc;
-extern uint16_t nextHopRloc;
+extern uint8_t borderRouteChangeCnt; // border router next hop change counter
+extern uint8_t borderRouterLC; // link cost for border router next hop
+extern uint32_t addressMsgCnt; // address resolution packets counter
+extern uint32_t joiningMsgCnt; // joining packets counter
+extern uint32_t routingMsgCnt; // routing packets counter
+extern uint32_t linkMsgCnt; // link packets counter
+extern uint32_t controlMsgCnt; // control packets counter
+extern uint32_t packetSuccessCnt; // packet success counter
+extern uint32_t packetFailCnt; // packet fail counter
+extern uint32_t packetBusyChannelCnt; // packet fail (busy channel) counter
+extern uint32_t broadcastCnt; // broadcast packets counter
+extern uint16_t myRloc; // RLOC16 of current node
+extern uint16_t nextHopRloc; // RLOC16 of next hop to border router
 
 #endif  // DEBUG_HPP_
